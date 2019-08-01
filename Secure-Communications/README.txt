@@ -1,0 +1,19 @@
+Run server (Server.bat) first, then client (Client.bat)
+
+Implementation (How the program works)
+I first created a connection for the server and client using port 6066, then created a rsakey function in both classes that made a public and private key pair for both alice (client ) and bob (server). 
+Once the key pair was created, I sent the public key of alice to bob and the public key of bob to alice. (Note: We assumed they already knew each other public key). 
+For the first communication, Alice (client) created a secret key. Then, this secret key was encrypted using bob’s public key (RSA) through the encryptKey function. 
+After encryption, the key was sent to bob (server) where he decrypted (decryptkey function) the key using his private key. 
+In the algorithm function of the client class, Alice first compute the digest of her 2000 byte message using sha-256, then signs the digest with her private key. 
+Next, alice encrypts her 2000 byte message with the secret key using AES. The signed digest and the encryption cipher-text were sent to Bob (server).
+Once Bob receives the signed digest and the encrypted message, he first decrypts the message (decryptmsg function) then he compute the digest of the message using sha-256 as well. 
+Bob then verifies the digest using alice’s public key. If the digest is verified the message is confirmed. 
+For the second communication, Bob and Alice create a secret key using Diffe-Hellman key exchange.  Bob (Server) creates p and g, then computes B = g^b mod p which are both sent to Alice.
+ Next, Alice compute A = g^a mod p and sends it to Bob. They both compute g ^AB mod p in the DiffeKey function in both classes.  
+They now have a secret key which will be used to encrypt bob’s message.
+Next Bob creates another secret key, which is encrypted using Alice public key and sent to Alice where it is decrypted similarly to the first secret key.
+In the algorithm function in the Server class, bob first computes a hmac with sha256 using the secret key he created. 
+Next, bob encrypts his 1000 byte message with the secret key from the differ-hellam key exchange with alice using AES. The hmac and the encrypted message are sent to Alice.
+Alice first decrypts the message (decryptmsg function) then computes the hmac of the message using the secret she got from bob. 
+She then check is the hmac she computed matches the hmac she received, if they match the message is confirmed. 

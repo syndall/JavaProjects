@@ -1,0 +1,1 @@
+RUN Aggregator, user1 and user2 program first, then run the TA.
